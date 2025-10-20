@@ -6,6 +6,11 @@
 #include <algorithm>
 using namespace std;
 
+/*
+
+    NOTE TO SELF: DON'T USE cin.eof() return 0; recklessly!
+*/
+
 bool is_digit(char c) {
     return c <= '9' && c >= '0';
 }

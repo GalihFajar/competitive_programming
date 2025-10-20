@@ -7,6 +7,9 @@
 using namespace std;
 typedef vector<pair<long, long>> vpii;
 
+
+// Lesson learned: try to not make it complicated (e.g. by using redundant things like array & sort)
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(0);

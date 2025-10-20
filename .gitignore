@@ -1,0 +1,11 @@
+*
+!*/
+!uva*
+!kattis/
+!kattis/**
+!usaco/**
+*/*.in*
+*/*.out*
+*/run
+*/template.cpp
+*/*.o*
