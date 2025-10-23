@@ -10,6 +10,7 @@ template <typename T> using v = vector<T>;
 using vi = vector<int>;
 using vvi = vector<vi>;
 using pii = pair<int, int>;
+using ll = long long;
 
 #define all(x) begin(x), end(x)
 #define fio(name)                                                              \
@@ -28,7 +29,7 @@ template <typename T> void print_v(vector<T> &v) {
 vi sums;
 int calculate_p(vi &v, int i) {
 
-  if (sums[i-1] != -1) {
+  if (i > 0 && sums[i-1] != -1) {
       sums[i] = v[i] - sums[i - 1];
       return sums[i];
   }
@@ -52,10 +53,11 @@ int main() {
   int t;
   cin >> t;
 
+
   while (t--) {
     int n;
-    sums = vi(n + 10, -1);
     cin >> n;
+    sums = vi(n + 10, -1);
     vi v;
 
     for (int i = 0; i < n; i++) {
@@ -74,21 +76,23 @@ int main() {
       }
     }
 
-    int k = -1;
+    vector<ll>  p(n);
+    p[0] = v[0];
+
+    for (int i = 1; i < n; i++) {
+      p[i] = v[i] - p[i - 1];
+    }
+
+    ll k = -1;
 
     if (n % 2 != 0) { // if odd
-      k = calculate_p(v, n - 1);
+      k = p[n - 1];
     } else {
-      int last = calculate_p(v, n - 1);
-      if (last != 0) {
-        k = -1;
-      } else {
-        int temp = INT_MAX;
-        for (int x = 0; x < n; x += 2) {
-          temp = min(temp, calculate_p(v, x));
-        }
-        k = temp;
+      ll temp = LLONG_MAX;
+      for (int x = 0; x < n; x += 2) {
+        temp = min(temp, p[x]);
       }
+      k = temp;
     }
 
     if (k < 0) {
@@ -96,29 +100,30 @@ int main() {
       continue;
     }
 
-    cout << "k: " << k << endl;
+    ll total = 0;
 
-    int total = 0;
-
-    for (int i = 0; i < n - 1; i++) {
-    
-      int temp = calculate_p(v, i);
-      if (i % 2 == 0) temp -= k;
-      cout << temp << endl;
-      if (i % 2 != 0 && temp < 0) {
-	  cout << "-1\n"; continue;
+    if(([&]() -> int {
+      for (int i = 0; i < n - 1; i++) {
+        ll ki = p[i];
+        if (i % 2 == 0) ki -= k;
+        if (ki < 0) {
+            cout << "-1\n"; return 1;
+        }
+        total += ki;
       }
-      total += temp;
-    }
 
-    total *= 2;
+      return 0;}())
+    ){
+      continue;
+    };
+
 
     if (total < 0) {
 	cout << "-1\n";
 	continue;
     }
 
-    cout << total << endl;
+    cout << total*2 << endl;
   }
 
   return 0;
