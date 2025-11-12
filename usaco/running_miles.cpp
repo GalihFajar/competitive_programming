@@ -8,9 +8,11 @@
 using namespace std;
 
 template <typename T> using v = vector<T>;
+using ll = long long;
 using vi = vector<int>;
 using vvi = vector<vi>;
 using pii = pair<int, int>;
+using vll = v<ll>;
 
 #define all(x) begin(x), end(x)
 #define fio(name) freopen(name ".in", "r", stdin); freopen(name ".out", "w", stdout);
@@ -25,65 +27,60 @@ void print_v(vector<T>& v) {
     cout << endl;
 }
 
-vi prefix_sum(vi& input) {
-    vi pref(input.size(), 0);
-    for (int i = 1; i < pref.size(); i++) {
-	pref[i] = input[i] + pref[i - 1];
-    }
-
-    return pref;
-}
-
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(0);
 
     // fio("<filename_prefix>")
     //
-    int n; cin >> n;
+    int tc; cin >> tc;
+    while (tc--) {
+	int n; cin >> n;
+	vi b(n);
 
-    for (int i_ = 0; i_ < n; i_++) {
-	int k; cin >> k;
-	vi inp(k + 1);
-	for (int i = 1; i < k + 1; i++) {
-	    int x; cin >> x;
-	    inp[i] = x;
+
+	for (int i = 0; i < n; i++) {
+	    cin >> b[i];
 	}
 
-	vi pref = prefix_sum(inp);
-	int ans = INT_MIN;
-	for (int i = 1; i < inp.size(); i++) {
-	    for (int j = 1; j < i; j++) {
-		if (i - j + 1 < 3) break;
-		priority_queue<int> pq;
-		if (ans <= (pref[i] - pref[j])) {
-		    for (int x = j; x <= i; x++) {
-			pq.push(-inp[x]);
+	vi pref_max(n), suff_max(n);
 
-			if (pq.size() > 3) pq.pop();
-		    }
+	for (int i = 0; i < n; i++) {
+	    pref_max[i] = b[i] + i;
+	    suff_max[i] = b[i] - i;
+	}
 
-		    int current = 0;
-		    while(!pq.empty()) {
-			current += -pq.top();
-			pq.pop();
-		    }
-		    /*cout << "\tcurrent: " << current << endl;*/
-		    /*cout << "\t\ti, j: " << i << ", " << j << endl;*/
+	for (int i = 1; i < n; i++) {
+	    pref_max[i] = max(pref_max[i], pref_max[i - 1]);
+	}
 
-		    ans = max(ans, current - (i - j));
-		}
-	    }
+	for (int i = n - 2; i >= 0; i--) {
+	    suff_max[i] = max(suff_max[i], suff_max[i + 1]);
+	}
+
+	int ans = 0;
+	for (int i = 1; i < n - 1; i++) {
+	    ans = max(ans, pref_max[i - 1] + b[i] + suff_max[i + 1]);
 	}
 	cout << ans << endl;
     }
-    
+
 
     return 0;
 }
 
 
 /*
+ * Seems like prefix sum work?
+ * Ok we need to choose 3 from the entire range, so it wouldn't work as direct
+ * Let's see hints...
+ * Ok its another math-induced problems
+ * So the logic is derived form the equation = b[i] + b[j] + b[k] - (r - l)
+ * where we need to maximize the eq.
+ * Now since we want to make the (r - l) the smallest possible, we could simplify,
+ * eq = b[i] + b[j] + b[k] - (k - i) ==> eq = b[i] + i + b[j] + b[k] - k
+ * Hence, we should maximize the point of mid (b[j]) then checking the max left of 
+ * b[i] + i array and b[k] - k array. These are the prefix/suffix sums
  *
  *
 */
