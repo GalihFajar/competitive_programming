@@ -130,7 +130,15 @@ int main() {
 }
 
 /*
- *
+ * Hmm let's work on first 3 pairs, since if these 3 is impossible to reduce than all of them are impossible as well
+ * Why 3? Since if a b c, then b would be affected by a + b op and b + c op.
+ * Lets code it
+ * It doesn't work!
+ * Lets see hints
+ * Wait lets ask LLM instead
+ * Wow this is math heavy.
+ * The equation can be derived, and with sets of boundaries, there are impossible cases, for example if the bags is not decreasing the value or if final value is neg
+ * Also the condition if the N is even and N is odd is different, and can be inferred from the equation as well.
  *
  *
  */
