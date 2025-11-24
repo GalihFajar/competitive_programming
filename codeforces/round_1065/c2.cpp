@@ -39,17 +39,16 @@ int xor_all(vi& x) {
 }
 
 int msb_at(int x) {
-    if (x == 0 || x == 1) return 0;
-
-    int current = 1;
-
-    while (x > (1 << current)) {
-	current++;
+    for (int i = 30; i >= 0; i--) {
+	if ((x >> i) & 1) {
+	    return i;
+	}
     }
 
-    return current - 1;
+    return 0;
 }
 
+// WARN: Unused
 vi count_msbs(vi& vec) {
     vi msbs(32, 0);
 
@@ -109,7 +108,6 @@ int main() {
 	}
 
 	solve(a, b);
-
     }
 
     return 0;
