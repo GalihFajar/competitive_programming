@@ -115,6 +115,14 @@ int main() {
 
 
 /*
- *
+ * Let's try to simulate
+ * It doesn't seem to work, let's ask LLM
+ * I get it, so we first must check the dividing factor which determines who wins: its the most significant bit (msb), as I've done in the previous attempt, but on how we determine it is tricky
+ * From the observation, we could see whether we swap or not, the outcome is deterministic, the value S
+ * If S is 0, it means the msb cancels out, so its a tie
+ * Otherwise, the msb is somewhere possessed by mai or ajisai
+ * To look for this, we need to look at the number where one of them has the msb
+ * We then iterate from behind (since the deciding turn is at the end/near-end of the game), to check at what turn the msb is on (for one of the players)
+ * if odd then ajisai win, otherwise
  *
 */
