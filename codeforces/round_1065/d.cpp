@@ -24,6 +24,42 @@ void print_v(vector<T>& v) {
     cout << endl;
 }
 
+vi prefix(vi& vec) {
+    vi out(vec.size());
+    out[0] = vec[0];
+    for (int i = 1; i < vec.size(); i++) {
+	out[i] = min(vec[i - 1], out[i - 1]);
+    }
+
+    return out;
+}
+
+vi suffix(vi& vec) {
+    vi out(vec.size());
+    out[vec.size() - 1] = vec[vec.size() - 1];
+
+    for (int i = vec.size() - 2; i >= 0; i--) {
+	out[i] = max(vec[i + 1], out[i + 1]);
+    }
+
+    return out;
+}
+
+void solve(vi& in) {
+    vi pref = prefix(in);
+    vi suf = suffix(in);
+
+    for (int i = 0; i < suf.size(); i++) {
+	if (suf[i] <= pref[i]) {
+	    cout << "No\n";
+	    return;
+	}
+    }
+
+    cout << "Yes\n";
+    return;
+}
+
 
 
 int main() {
@@ -35,12 +71,12 @@ int main() {
     int tc; cin >> tc;
     while (tc--) {
 	int n; cin >> n;
-	vi inp;
-	v<bool> visited(n + 1, 0);
+	vi inp(n);
 	for (int i = 0; i < n; i++) {
-	    int x; cin >> x;
-	    inp.push_back(x);
+	    cin >> inp[i];
 	}
+
+	solve(inp);
     }
 
     return 0;
@@ -48,6 +84,17 @@ int main() {
 
 
 /*
+ * Ok lets ask llm for hints
+ * it turns out it would involve prefix & suffix "sum"
+ * Lets figure out ourselves how that might play
+ * I think I got it, instead of checking the tree is possible or not, we should check if there's any violation that makes the tree impossible
+ * Using prefix, we construct the minimal value, so prefix[n] is minimal value up until point n [0...n]
+ * Using suffix, its basically the same but we construct max value, so suffix[n] is max value [N...n]
+ * The idea is, if theres violation, we then cannot construct the tree
+ * The violation is defined as whether we cannot connect any point from suffix (the max value) to suffix (any min value)
+ * Because at point suffix[n], if its impossible to connect, then suffix[n+1] cannot connect as well (suffix[n] > suffix[n + 1])
+ * We can define violation if prefix[n] >= suffix[n]
+ * The '=' is there because it means that the point can only connect to itself
  *
  *
 */
