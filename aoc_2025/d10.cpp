@@ -95,19 +95,9 @@ bool is_all_same(string& s, char target) {
     return true;
 }
 
-void press(string& s, vi& button_pressed) {
-    for (auto& i: button_pressed) {
-	if (i == '#')
-	    s[i] = '.';
-	else 
-	    s[i] = '#';
-    }
-}
-
 string press_return(string temp, vi& button_pressed) {
     string s = temp;
     for (auto& i: button_pressed) {
-	cout << "i: " << i << "\n";
 	if (s[i] == '#') {
 	    s[i] = '.';
 	}
@@ -119,26 +109,56 @@ string press_return(string temp, vi& button_pressed) {
     return s;
 }
 
-int search(Machine* m, string indicator, int current_press, int prev) {
-    if (is_all_same(indicator, '.') || current_press> 1000) 
-	return current_press;
+unordered_map<string, int> dp;
 
-    cout << "prev: " << prev << endl;
-    cout << "indicator:" << indicator << endl;
+// using subset approach
+int solve(Machine* m, string current_lights, int idx) {
+    if (idx == m->buttons.size()) {
+	if (is_all_same(current_lights, '.')) 
+	    return 0;
+	return 1e9;
+    }
+
+    string key = current_lights + '$' + to_string(idx);
+    if (dp.count(key)) return dp[key];
+
+    int cost_skip = solve(m, current_lights, idx + 1);
+    string flipped = press_return(current_lights, m->buttons[idx]);
+    int cost_choose = 1 + solve(m, flipped, idx + 1);
+
+    dp[key] = min(cost_skip, cost_choose);
+
+    return dp[key];
+}
+
+int search(Machine* m, string indicator, int current_press, int current_idx) {
+    string param = indicator;
+    param += '$';
+    param += to_string(current_idx);
+
+    if (dp[param]) {
+	return dp[param];
+    }
+
+    dp[param] = INT_MAX;
+    string flipped = press_return(indicator, m->buttons[current_idx]);
+    if (is_all_same(flipped, '.'))  {
+	return current_press;
+    }
 
     int n = m->buttons.size();
     int min_press = INT_MAX;
     for (int i = 0; i < n; i++) {
-	if (i == prev) {
+	if (i == current_idx) {
 	    continue;
 	}
 
-	string flipped = press_return(indicator, m->buttons[i]);
 
 	min_press = min(min_press, search(m, flipped, current_press + 1, i));
     }
+    dp[param] = min(dp[param], min_press);
 
-    return min_press;
+    return dp[param];
 }
 
 int main() {
@@ -158,12 +178,11 @@ int main() {
     int ans = 0;
     for (int i = 0; i < n; i++) {
 	Machine* m = machines[i];
-    }
-    ans += search(machines[0], machines[0]->indicator, 0, -1);
+	dp.clear();
 
-    // string indicator = ".##.";
-    // vi asdf = {1, 3};
-    // cout << press_return(indicator, asdf) << endl;
+	int result = solve(m, m->indicator, 0);
+	ans += result;
+    }
 
 
     cout << ans << endl;
