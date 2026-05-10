@@ -1,9 +1,15 @@
 *
+!codeforces/**/*.cpp
+!aoc_2025/**/*.cpp
+!aoc_2025/**/*.py
+codeforces/**/template.cpp
 !*/
 !uva*
 !kattis/
 !kattis/**
 !usaco/**
+!leetcode/**
+!catournament/**
 */*.in*
 */*.out*
 */run
