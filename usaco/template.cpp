@@ -1,10 +1,11 @@
-#include <iostream>
-#include <vector>
-#include <climits>
-#include <cmath>
-#include <unordered_map>
-#include <algorithm>
+#include <bits/stdc++.h>
 using namespace std;
+
+#ifdef LOCAL
+#include "../algo/misc/debug.h"
+#else
+#define debug(...) 42
+#endif
 
 template <typename T> using v = vector<T>;
 using vi = vector<int>;
