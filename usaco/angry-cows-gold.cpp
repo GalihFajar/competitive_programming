@@ -63,46 +63,7 @@ int last_true(int lo, int hi, function<bool(int)> f) {
   return lo;
 }
 
-void blast(vll &a, v<bool> &blasted, int blast_idx, int rad, int &total) {
-  rad--;
-  if (rad < 0)
-    return;
 
-  if (blasted[blast_idx] || !total) {
-    return;
-  } else {
-    blasted[blast_idx] = true;
-    total--;
-  }
-
-  int left_idx = blast_idx - 1;
-  while (left_idx >= 0 && a[blast_idx] - a[left_idx] <= rad) {
-    blast(a, blasted, left_idx, rad - 1, total);
-    left_idx--;
-  }
-
-  int right_idx = blast_idx + 1;
-  while (right_idx < a.size() && a[right_idx] - a[blast_idx] <= rad) {
-    blast(a, blasted, right_idx, rad - 1, total);
-    right_idx++;
-  }
-}
-
-// ll f(ll rad, vll &a) {
-//
-//   for (int i = 0; i < a.size(); i++) {
-//     v<bool> blasted(a.size());
-//     int total = a.size();
-//     blast(a, blasted, i, rad, total);
-//     if (total == 0) {
-//       return true;
-//     }
-//   }
-//
-//   return false;
-// }
-//
-//
 int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
