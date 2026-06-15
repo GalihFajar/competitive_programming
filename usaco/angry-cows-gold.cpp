@@ -1,4 +1,13 @@
-#include <bits/stdc++.h>
+#include <algorithm>
+#include <climits>
+#include <cmath>
+#include <functional>
+#include <iomanip>
+#include <iostream>
+#include <map>
+#include <string>
+#include <unordered_map>
+#include <vector>
 using namespace std;
 
 #ifdef LOCAL
@@ -28,14 +37,27 @@ template <typename T> void print_v(vector<T> &v) {
   cout << endl;
 }
 
-ll first_true(ll lo, ll hi, function<bool(ll)> f) {
+int first_true(int lo, int hi, function<bool(int)> f) {
   hi++;
   while (lo < hi) {
-    ll mid = lo + (hi - lo) / 2;
+    int mid = lo + (hi - lo) / 2;
     if (f(mid)) {
       hi = mid;
     } else {
       lo = mid + 1;
+    }
+  }
+  return lo;
+}
+
+int last_true(int lo, int hi, function<bool(int)> f) {
+  lo--;
+  while (lo < hi) {
+    int mid = lo + (hi - lo + 1) / 2;
+    if (f(mid)) {
+      lo = mid;
+    } else {
+      hi = mid - 1;
     }
   }
   return lo;
@@ -52,7 +74,6 @@ void blast(vll &a, v<bool> &blasted, int blast_idx, int rad, int &total) {
     blasted[blast_idx] = true;
     total--;
   }
-
 
   int left_idx = blast_idx - 1;
   while (left_idx >= 0 && a[blast_idx] - a[left_idx] <= rad) {
@@ -81,6 +102,7 @@ void blast(vll &a, v<bool> &blasted, int blast_idx, int rad, int &total) {
 //   return false;
 // }
 //
+//
 int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
@@ -92,25 +114,60 @@ int main() {
 
   for (int i = 0; i < n; i++) {
     cin >> a[i];
+    a[i] *= 2;
   }
+
+  sort(all(a));
 
   ll ans;
 
-  ans = first_true(1, 1000, [&](ll rad) {
-    for (int i = 0; i < a.size(); i++) {
-      v<bool> blasted(a.size());
-      int total = a.size();
-      blast(a, blasted, i, rad, total);
-      if (total == 0) {
-        debug(rad, blasted);
-        return true;
+  auto check_left = [&](int pos, int power) {
+    int cur_pos = pos, cur_power = power;
+
+    while (cur_pos - cur_power > a.front()) {
+      auto it = lower_bound(all(a), cur_pos - cur_power);
+      int next_pos = *it;
+
+      if (next_pos >= cur_pos) {
+        return false;
       }
+
+      cur_pos = next_pos;
+      cur_power -= 2;
     }
 
-    return false;
+    return true;
+  };
+
+  auto check_right = [&](int pos, int power) {
+    int cur_pos = pos, cur_power = power;
+
+    while (cur_pos + cur_power < a.back()) {
+      auto it = prev(upper_bound(all(a), cur_pos + cur_power));
+      int next_pos = *it;
+
+      if (next_pos <= cur_pos) {
+        return false;
+      }
+
+      cur_pos = next_pos;
+      cur_power -= 2;
+    }
+
+    return true;
+  };
+
+  int min_power = first_true(0, a.back() - a.front(), [&](int power) {
+    int best_pos = last_true(a.front(), a.back(),
+                             [&](int pos) { return check_left(pos, power); });
+
+    if (best_pos < a.front())
+      return false;
+
+    return check_right(best_pos, power);
   });
 
-  cout << ans << ".0" << endl;
+  cout << fixed << setprecision(1) << min_power / 2.0 << endl;
 
   return 0;
 }
