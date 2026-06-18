@@ -10,6 +10,7 @@ codeforces/**/template.cpp
 !usaco/**
 !leetcode/**
 !catournament/**
+!atcoder/**
 */*.in*
 */*.out*
 */run
