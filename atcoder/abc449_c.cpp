@@ -38,13 +38,15 @@ int main() {
   r++;
   string s;
   cin >> s;
-  int total = 0;
+  ll total = 0;
 
   vi cnt(26);
 
   for (int i = 0; i < s.size(); i++) {
-    if (i - l >= 0) cnt[s[i - l] - 'a']++;
-    if (i - r >= 0) cnt[s[i - r] - 'a']--;
+    if (i - l >= 0)
+      cnt[s[i - l] - 'a']++;
+    if (i - r >= 0)
+      cnt[s[i - r] - 'a']--;
 
     total += cnt[s[i] - 'a'];
   }
